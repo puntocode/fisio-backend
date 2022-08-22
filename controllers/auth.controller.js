@@ -9,15 +9,15 @@ const { generarJWT } = require('../utils/jwt');
 
 const login = async( req, res = response ) => {
 
-    const { email, password } = req.body;
+    const { name, password } = req.body;
 
     try {
         
         // Verificar email
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ name });
 
         if ( !user ) {
-            return res.status(404).json({msg: 'Email no encontrado'});
+            return res.status(404).json({msg: 'El usuario no ha sido encontrado'});
         }
 
         // Verificar contraseña
@@ -87,8 +87,9 @@ const login = async( req, res = response ) => {
 
 const renewToken = async(req, res = response) => {
     const uid = req.uid;
+    const user = await User.findById( uid );
     const token = await generarJWT( uid );
-    res.json({ token });
+    res.json({ token, user });
 }
 
 module.exports = { login, renewToken }
